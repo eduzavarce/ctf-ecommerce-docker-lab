@@ -55,4 +55,5 @@ docker volume ls
 
 ## 10. GitHub Actualizado
 
+![git fase 2](media/git-fase2.png)
 
