@@ -7,7 +7,7 @@
 ---
 ## 1. Guía de Instalación y Despliegue
 
-Prerequisitos: servidor Ubuntu 22.4.5 LTS.
+Prerequisitos: servidor Ubuntu 22.04.5 LTS.
 
 Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
 
@@ -102,3 +102,18 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 | **WordPress (Web)** | `80` (HTTP) / `443` (HTTPS) | `80` / `443` | **Sí** | Acceso público de los clientes al e-commerce (*DMZ*). |
 | **MariaDB (Base de datos)** | Ninguno | `3306` | **No** | Uso interno exclusivo para la persistencia de datos (*Red Privada aislada*). |
 
+[Screenshots comprobaci´ón de configuraciones](docs/validations/fase2/fase2-evidencias.md)
+
+## 6. Mapa de Evidencias 
+
+| Acción / Evento | Activo / Origen | Ubicación del Registro (Ruta / Servicio) | Datos Clave a Identificar |
+| :--- | :--- | :--- | :--- |
+| **Login SSH (Correcto / Incorrecto)** | Linux (Host) | `/var/log/auth.log` (o `journalctl -u ssh`) | Fecha/hora, IP de origen, Usuario, Resultado (Accepted / Failed). |
+| **Petición HTTP (Correcta / Errónea)** | Web (`WEB-01`) / WordPress | Logs del contenedor Docker (`shop-wordpress`) | IP de origen, Hora, Método HTTP, URL, Código de Estado (200, 404...). |
+| **Actividad de Contenedores** | Docker Engine | `/var/lib/docker/containers/` o `docker logs` | Timestamp, ID del contenedor, Mensajes de error o arranque. |
+
+### Evidencias:
+[Screenshots de los logs](docs/validations/fase3/evidencias.md)
+
+
+---
