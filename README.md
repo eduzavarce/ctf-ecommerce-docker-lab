@@ -32,7 +32,7 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
 
     ```bash
     docker compose up -d
-```
+    ```
 
 ---
 
