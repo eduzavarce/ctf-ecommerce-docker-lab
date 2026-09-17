@@ -8,16 +8,15 @@ networks:
         - subnet: 172.20.10.0/24
   priv-net:
     driver: bridge
-    internal: true  # Red completamente aislada de internet
+    internal: true  
     ipam:
       config:
         - subnet: 172.20.20.0/24
 
 volumes:
-  wordpress_data:
-    driver: local
   db_data:
     driver: local
+    name: shop-db-data
 
 services:
   web-01:
