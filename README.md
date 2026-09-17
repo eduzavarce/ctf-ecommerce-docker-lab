@@ -7,6 +7,8 @@
 ---
 ## 1. Guía de Instalación y Despliegue
 
+Prerequisitos: servidor Ubuntu 22.4.5 LTS.
+
 Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
 
 1. **Ejecutar los scripts de preparación del entorno e instalación:**
