@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  dmz-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.10.0/24
+  priv-net:
+    driver: bridge
+    internal: true  # Red completamente aislada de internet
+    ipam:
+      config:
+        - subnet: 172.20.20.0/24
+
+volumes:
+  wordpress_data:
+    driver: local
+  db_data:
+    driver: local
+
+services:
+  web-01:
+    image: wordpress:latest
+    container_name: shop-wordpress
+    restart: unless-stopped
+    depends_on:
+      - db-01
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      WORDPRESS_DB_HOST: db-01:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    volumes:
+      - type: bind
+        source: /srv/wordpress
+        target: /var/www/html
+    networks:
+      - dmz-net
+      - priv-net
+
+  db-01:
+    image: mariadb:latest
+    container_name: shop-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - priv-net
