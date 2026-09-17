@@ -1,6 +1,6 @@
-# Proyecto: Despliegue Seguro de E-commerce con Contenedores y Redes Segmentadas
+# *Art i Mar Cambrils*
 
-- **Nombre del proyecto:** Infraestructura Segura Docker para E-commerce Artesanal (*Art i Mar Cambrils*)
+- **Nombre del proyecto:**  Despliegue Seguro de E-commerce con Contenedores y Redes Segmentadas *Art i Mar Cambrils*
 - **Integrantes:** Eduardo Zavarce Forsythe
 - **Temática:** Despliegue de comercio electrónico local de artesanía marinera, decoración y cerámica con WordPress y MySQL sobre una arquitectura de red segmentada.
 
@@ -15,19 +15,21 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
     ./scripts/00-initial-setup/01-install-docker.sh
      ```
 
-Configurar las variables de entorno:
-Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
+2. Configurar las variables de entorno:
+    
+    Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
 
-```bash
-cp template.env .env
-```
-(Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
+    ```bash
+    cp template.env .env
+    ```
+    (Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
 
-Desplegar los contenedores:
-Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
+3. Desplegar los contenedores:
 
-```bash
-docker compose up -d
+    Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
+
+    ```bash
+    docker compose up -d
 ```
 
 ---
