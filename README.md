@@ -15,7 +15,7 @@ La infraestructura representa un servidor virtual corporativo expuesto a interne
 
 | Componente                 | Tecnología                | Función                                                                                            |
 | :------------------------- | :------------------------ | :------------------------------------------------------------------------------------------------- |
-| **Sistema principal**      | Ubuntu Server 26.04.1 LTS | Sistema operativo base para la administración y alojamiento de la infraestructura.                 |
+| **Sistema principal**      | Ubuntu 22.04.5 LTS | Sistema operativo base para la administración y alojamiento de la infraestructura.                 |
 | **Acceso remoto**          | OpenSSH Server            | Administración segura y remota del servidor host mediante consola cifrada.                         |
 | **Ejecución de servicios** | Docker & Docker Compose   | Orquestación y aislamiento de los servicios mediante contenedores.                                 |
 | **Servicio principal (WEB-01)**     | WordPress                 | Aplicación web de comercio electrónico (tienda en línea de artesanía).                             |
@@ -36,7 +36,7 @@ graph TD
     classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
     classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
     classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
-    
+
     CLIENTE(("CLIENTE")):::clientStyle -->|Tráfico Web / HTTPS| Host
 
     subgraph Host ["Ubuntu Server 22.04"]
