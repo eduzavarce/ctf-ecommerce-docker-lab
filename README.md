@@ -117,3 +117,13 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 
 
 ---
+
+## 7. Monitorización / IDS 
+
+### Suricata:
+
+Elegido el IDS suricata para monitorear y generar alertas de actividad en la subred.
+
+Agregada una regla para alertar peticiones de ICMP (ping).
+
+[Configuración y pruebas](docs/validations/fase4/evidencias.md)
