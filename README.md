@@ -18,8 +18,8 @@ La infraestructura representa un servidor virtual corporativo expuesto a interne
 | **Sistema principal**      | Ubuntu Server 26.04.1 LTS | Sistema operativo base para la administración y alojamiento de la infraestructura.                 |
 | **Acceso remoto**          | OpenSSH Server            | Administración segura y remota del servidor host mediante consola cifrada.                         |
 | **Ejecución de servicios** | Docker & Docker Compose   | Orquestación y aislamiento de los servicios mediante contenedores.                                 |
-| **Servicio principal WEB-01**     | WordPress                 | Aplicación web de comercio electrónico (tienda en línea de artesanía).                             |
-| **Persistencia DB-01**           | MariaDB                   | Sistema de gestión de bases de datos relacionales para el almacenamiento de contenidos y usuarios. |
+| **Servicio principal (WEB-01)**     | WordPress                 | Aplicación web de comercio electrónico (tienda en línea de artesanía).                             |
+| **Persistencia (DB-01)**           | MariaDB                   | Sistema de gestión de bases de datos relacionales para el almacenamiento de contenidos y usuarios. |
 | **Monitorización / IDS**   | Suricata                  | Sistema de detección de intrusiones en red para la supervisión del tráfico y alerta temprana.      |
 
 ---
@@ -61,4 +61,14 @@ graph TD
 
     WEB -.->|Consulta / Datos| DB
 ```
+
+## 5. Configuración de Red y Puertos
+
+Para garantizar la seguridad y la segmentación del tráfico, los puertos se han configurado minimizando la exposición pública de los servicios internos:
+
+| Servicio / Componente | Puerto Expuesto (Host/VM) | Puerto en Contenedor | ¿Expuesto al exterior? | Función |
+| :--- | :--- | :--- | :--- | :--- |
+| **OpenSSH Server** | `22` | `22` | **Sí** | Administración remota segura del servidor host. |
+| **WordPress (Web)** | `80` (HTTP) / `443` (HTTPS) | `80` / `443` | **Sí** | Acceso público de los clientes al e-commerce (*DMZ*). |
+| **MariaDB (Base de datos)** | Ninguno | `3306` | **No** | Uso interno exclusivo para la persistencia de datos (*Red Privada aislada*). |
 
