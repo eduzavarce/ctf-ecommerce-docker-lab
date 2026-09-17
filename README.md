@@ -5,6 +5,32 @@
 - **Temática:** Despliegue de comercio electrónico local de artesanía marinera, decoración y cerámica con WordPress y MySQL sobre una arquitectura de red segmentada.
 
 ---
+## 1. Guía de Instalación y Despliegue
+
+Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
+
+1. **Ejecutar los scripts de preparación del entorno e instalación:**
+     ```bash
+    ./scripts/00-initial-setup/00-create-folders.sh
+    ./scripts/00-initial-setup/01-install-docker.sh
+     ```
+
+Configurar las variables de entorno:
+Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
+
+```bash
+cp template.env .env
+```
+(Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
+
+Desplegar los contenedores:
+Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+---
 
 ## 2. Descripción breve del sistema
 La infraestructura representa un servidor virtual corporativo expuesto a internet simulando el entorno de producción de una tienda artesanal local. El servicio presta una plataforma web de comercio electrónico accesible públicamente para clientes y administración. Gestiona información ficticia de catálogo de productos artesanales, altas de usuarios, pedidos y transacciones comerciales simuladas. La aplicación web (WordPress) funciona como interfaz de cara al cliente y pasarela de gestión del negocio, operando de forma aislada de los datos críticos para garantizar la resiliencia y la seguridad de la información.
