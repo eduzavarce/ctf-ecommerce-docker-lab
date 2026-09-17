@@ -33,13 +33,6 @@
 
 ## 8. Persistencia (Bind Mounts y Volúmenes)
 
-* **Método de comprobación:** Comprobación de que los archivos de WordPress residen en el directorio del host `/srv/wordpress` y los datos de MariaDB en el volumen Docker.
-* **Comando ejecutado:**
-```bash
-ls -la /srv/wordpress
-docker volume ls
-
-```
 - Wordpress bound directory: 
 
 	![wordpress directory](media/wordpress-directory-list.png)
