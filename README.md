@@ -102,7 +102,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 | **WordPress (Web)** | `80` (HTTP) / `443` (HTTPS) | `80` / `443` | **Sí** | Acceso público de los clientes al e-commerce (*DMZ*). |
 | **MariaDB (Base de datos)** | Ninguno | `3306` | **No** | Uso interno exclusivo para la persistencia de datos (*Red Privada aislada*). |
 
-[Screenshots comprobaci´ón de configuraciones](docs/validations/fase2/fase2-evidencias.md)
+[Screenshots comprobaci´ón de configuraciones](docs/validations/fase2/evidencias.md)
 
 ## 6. Mapa de Evidencias 
 
