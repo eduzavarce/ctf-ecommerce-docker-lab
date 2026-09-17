@@ -31,12 +31,12 @@ A continuación se muestra el esquema estructural que contempla el flujo de red,
 ```mermaid
 graph TD
     %% Definición de Estilos
-    classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px;
-    classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px;
-    classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px;
-
+    classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+    classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
+    classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
+    classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
+    classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    
     CLIENTE(("CLIENTE")):::clientStyle -->|Tráfico Web / HTTPS| Host
 
     subgraph Host ["Ubuntu Server 22.04"]
