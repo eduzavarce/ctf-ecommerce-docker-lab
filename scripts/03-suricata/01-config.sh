@@ -18,18 +18,10 @@ SUBNET_BASE=$(echo "$HOST_IP" | cut -d'.' -f1-3)
 HOST_NET="${SUBNET_BASE}.0/24"
 
 HOME_NET_VAL="[$HOST_NET]"
-echo "[+] Selected network for HOME_NET: $HOME_NET_VAL"
-
-echo "[*] Verifying custom ICMP rule in $RULE_FILE..."
 
 if ! sudo grep -q "sid:1000001" "$RULE_FILE" 2>/dev/null; then
     echo "$RULE" | sudo tee -a "$RULE_FILE" > /dev/null
-    echo "[+] Rule added correctly."
-else
-    echo "[i] The rule was already configured."
 fi
-
-echo "[*] Configuring suricata.yaml..."
 
 sudo sed -i "s|^\s*HOME_NET: \".*\"|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE" || \
 sudo sed -i "s|^\s*HOME_NET: .*|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE"
