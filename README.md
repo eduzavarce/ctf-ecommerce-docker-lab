@@ -56,36 +56,32 @@ La infraestructura representa un servidor virtual corporativo expuesto a interne
 
 ## 4. Arquitectura inicial
 
-A continuación se muestra el esquema estructural que contempla el flujo de red, el acceso administrativo y la segmentación de contenedores (DMZ vs Red Privada):
-
 ```mermaid
 graph TD
-    %% Definición de Estilos
     classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+    classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
     classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
     classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
     classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
     classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
 
-    CLIENTE(("CLIENTE")):::clientStyle -->|Tráfico Web / HTTPS| Host
+    CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico Web / HTTPS| WEB
+    ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH| SSH
 
-    subgraph Host ["Ubuntu Server 22.04"]
-        direction TB
-        SSH["SSH (Acceso Remoto)"]:::hostStyle
-        Suricata["Suricata (IDS)"]:::hostStyle
+    subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
+        SSH["SSH Server (OpenSSH)"]:::hostStyle
+        Suricata["Suricata IDS (enp1s0)"]:::hostStyle
         
-        subgraph Docker ["Docker Engine"]
-            direction TB
-            subgraph DMZ ["Red DMZ (Externa)"]
-                WEB["WEB-01"]:::serviceStyle
+        subgraph DOCKER ["Docker Engine Bridge"]
+            subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
+                WEB["WEB-01 WordPress (172.20.10.2)"]:::serviceStyle
             end
-            subgraph PRIV ["Red Privada (Aislada)"]
-                DB["DB-01"]:::serviceStyle
+            subgraph PRIV ["Red Privada (172.20.20.0/24)"]
+                DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
             end
         end
     end
 
-    %% Aplicación de clases a subgráficos
     class DMZ dmzStyle;
     class PRIV privStyle;
 
