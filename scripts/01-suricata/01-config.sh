@@ -33,8 +33,7 @@ if ! sudo grep -q "local.rules" "$CONFIG_FILE"; then
     # Insert '  - local.rules' right below '  - suricata.rules'
     sudo sed -i '/- suricata.rules/a \  - local.rules' "$CONFIG_FILE"
 fi
-CONFIG_FILE="/etc/suricata/suricata.yaml"
-INTERFACE=patatas
+
 echo "Please edit the file $CONFIG_FILE replacing the following lines:"
 echo ===================================
 echo " af-packet:"
