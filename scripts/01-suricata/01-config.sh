@@ -26,13 +26,27 @@ fi
 sudo sed -i "s|^\s*HOME_NET: \".*\"|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE" || \
 sudo sed -i "s|^\s*HOME_NET: .*|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE"
 
-sudo sed -i '/^[[:space:]]*af-packet:/,/^[[:space:]]*-[[:space:]]*interface:/ s/^[[:space:]]*interface:.*/    - interface: '"$INTERFACE"'/' "$CONFIG_FILE"
+# sudo sed -i '/^[[:space:]]*af-packet:/,/^[[:space:]]*-[[:space:]]*interface:/ s/^[[:space:]]*interface:.*/    - interface: '"$INTERFACE"'/' "$CONFIG_FILE"
 
 echo "[*] Verifying declaration of local.rules in $CONFIG_FILE..."
 if ! sudo grep -q "local.rules" "$CONFIG_FILE"; then
     # Insert '  - local.rules' right below '  - suricata.rules'
     sudo sed -i '/- suricata.rules/a \  - local.rules' "$CONFIG_FILE"
 fi
+CONFIG_FILE="/etc/suricata/suricata.yaml"
+INTERFACE=patatas
+echo "Please edit the file $CONFIG_FILE replacing the following lines:"
+echo ===================================
+echo " af-packet:"
+echo "  - interface: eth0 "
+echo ===================================
+echo "for:"
+echo ===================================
+echo " af-packet:"
+echo "  - interface: $INTERFACE "
+echo ===================================
 
-sudo systemctl restart suricata
-sudo systemctl status suricata --no-pager
+echo then run the following commands to restart Suricata and check its status:
+
+echo sudo systemctl restart suricata
+echo sudo systemctl status suricata --no-pager
