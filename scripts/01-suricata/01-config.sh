@@ -26,8 +26,7 @@ fi
 sudo sed -i "s|^\s*HOME_NET: \".*\"|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE" || \
 sudo sed -i "s|^\s*HOME_NET: .*|    HOME_NET: \"$HOME_NET_VAL\"|" "$CONFIG_FILE"
 
-sudo sed -i "s/interface: .*/interface: $INTERFACE/" "$CONFIG_FILE"
-
+sudo sed -i '/^[[:space:]]*af-packet:/,/^[[:space:]]*-[[:space:]]*interface:/ s/^[[:space:]]*interface:.*/    - interface: '"$INTERFACE"'/' "$CONFIG_FILE"
 
 echo "[*] Verifying declaration of local.rules in $CONFIG_FILE..."
 if ! sudo grep -q "local.rules" "$CONFIG_FILE"; then
