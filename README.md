@@ -15,6 +15,8 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
      ```bash
     ./scripts/00-initial-setup/00-create-folders.sh
     ./scripts/00-initial-setup/01-install-docker.sh
+    ./scripts/00-initial-setup/02-install-dependencies.sh
+    
      ```
 
 2. Configurar las variables de entorno:
@@ -123,3 +125,22 @@ Elegido el IDS suricata para monitorear y generar alertas de actividad en la sub
 Agregada una regla para alertar peticiones de ICMP (ping).
 
 [Configuración y pruebas](docs/validations/fase4/evidencias.md)
+
+---
+
+## 8. Pruebas realizadas al entorno
+
+
+| Acción | Fuente Principal de Registro | Detectada / Registrada | Información Obtenida (Detalles Clave) |
+| --- | --- | --- | --- |
+| **SSH correcto** | `/var/log/auth.log` | **Sí** | Fecha/hora, IP de origen, usuario autenticado, método de acceso (Accepted publickey/password). |
+| **SSH incorrecto** | `/var/log/auth.log` | **Sí** | Fecha/hora, IP de origen, usuario intentado, fallo de autenticación (Failed password). |
+| **Web válida** | Logs de contenedores Docker / WordPress | **Sí** | IP de origen, timestamp, método HTTP (`GET`), recurso solicitado (`/`), código de estado `200 OK`. |
+| **Web 404** | Logs de contenedores Docker / WordPress | **Sí** | IP de origen, timestamp, recurso no existente solicitado, código de estado `404 Not Found`. |
+| **Docker** | `docker logs` / Motor Docker | **Sí** | Timestamps de arranque, estado de los contenedores (`shop-wordpress`, `shop-mariadb`), mensajes de conectividad interna. |
+| **Ping** | Suricata (`/var/log/suricata/fast.log`) | **Sí** | Alerta generada por regla propia (`sid:1000001`), IP origen del escaneo/ping, IP destino (`192.168.1.39`), protocolo ICMP. |
+| **Nmap** | Suricata / Logs del sistema / Web logs | **Sí** | Identificación de barrido de puertos, peticiones múltiples concurrentes, registro de conexiones entrantes a servicios expuestos. |
+
+[Screenshot de resultados](docs/validations/fase5/evidencias.md)
+---
+
