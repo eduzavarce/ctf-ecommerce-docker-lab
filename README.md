@@ -7,19 +7,19 @@
 ---
 ## 1. Guía de Instalación y Despliegue
 
-Prerequisitos: servidor Ubuntu 22.04.5 LTS.
+### Prerequisitos: 
+- Servidor Ubuntu 22.04.5 LTS.
 
 Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
 
 1. **Ejecutar los scripts de preparación del entorno e instalación:**
-     ```bash
+    ```bash
     ./scripts/00-initial-setup/00-create-folders.sh
     ./scripts/00-initial-setup/01-install-docker.sh
     ./scripts/00-initial-setup/02-install-dependencies.sh
-    
-     ```
+    ```
 
-2. Configurar las variables de entorno:
+2. **Configurar las variables de entorno:**
     
     Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
 
@@ -28,7 +28,7 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
     ```
     (Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
 
-3. Desplegar los contenedores:
+3. **Desplegar los contenedores:**
 
     Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
 
@@ -36,6 +36,12 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
     docker compose up -d
     ```
 
+4. **Configuracion de monitorización:**
+
+    ```bash
+    ./scripts/01-suricata/00-install.sh
+    ./scripts/01-suricata/01-config.sh
+    ```
 ---
 
 ## 2. Descripción breve del sistema
