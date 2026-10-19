@@ -35,3 +35,5 @@ echo "[*] Restarting Suricata service..."
 sudo systemctl restart suricata
 echo "[*] Suricata status:"
 sudo systemctl status suricata --no-pager
+
+sudo suricata -T -c /etc/suricata/suricata.yaml
