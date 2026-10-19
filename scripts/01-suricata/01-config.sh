@@ -2,7 +2,7 @@
 set -e
 
 CONFIG_FILE="/etc/suricata/suricata.yaml"
-CONFIG_TEMPLATE="../../suricata/suricata.yaml"
+CONFIG_TEMPLATE="suricata/suricata.yaml"
 RULE_FILE="/etc/suricata/rules/local.rules"
 RULE='alert icmp any any -> $HOME_NET any (msg:"ping detectado hacia la red protegida"; sid:1000001; rev:1;)'
 
