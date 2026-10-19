@@ -1,0 +1,23 @@
+vars:
+  address-groups:
+    HOME_NET: HOME_NET_PLACEHOLDER
+    EXTERNAL_NET: "!$HOME_NET"
+
+default-rule-path: /etc/suricata/rules
+
+rule-files:
+  - local.rules
+
+af-packet:
+  - interface: INTERFACE_PLACEHOLDER
+    threads: auto
+
+outputs:
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+  - stats:
+      enabled: yes
+      filename: stats.log
+      interval: 8
