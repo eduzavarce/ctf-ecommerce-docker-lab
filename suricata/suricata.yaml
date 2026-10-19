@@ -1,6 +1,8 @@
+%YAML 1.1
+---
 vars:
   address-groups:
-    HOME_NET: HOME_NET_PLACEHOLDER
+    HOME_NET: "HOME_NET_PLACEHOLDER"
     EXTERNAL_NET: "!$HOME_NET"
 
 default-rule-path: /etc/suricata/rules
