@@ -31,9 +31,10 @@ sudo sed -i -E \
     -e "s|INTERFACE_PLACEHOLDER|$INTERFACE|g" \
     "$CONFIG_FILE"
 
+echo "[*] Validating Suricata configuration..."
+sudo suricata -T -c /etc/suricata/suricata.yaml
+
 echo "[*] Restarting Suricata service..."
 sudo systemctl restart suricata
 echo "[*] Suricata status:"
 sudo systemctl status suricata --no-pager
-
-sudo suricata -T -c /etc/suricata/suricata.yaml
