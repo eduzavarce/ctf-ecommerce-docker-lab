@@ -24,7 +24,7 @@ if ! sudo grep -q "sid:1000001" "$RULE_FILE" 2>/dev/null; then
     echo "$RULE" | sudo tee -a "$RULE_FILE" > /dev/null
 fi
 
-sudo cat "$CONFIG_TEMPLATE" > "$CONFIG_FILE"
+sudo tee "$CONFIG_FILE" < "$CONFIG_TEMPLATE" > /dev/null
 
 sudo sed -i -E \
     -e "s|HOME_NET_PLACEHOLDER|$HOME_NET_VAL|g" \
