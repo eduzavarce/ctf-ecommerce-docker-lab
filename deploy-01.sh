@@ -11,12 +11,10 @@ fi
 ./scripts/00-initial-setup/01-install-docker.sh
 ./scripts/00-initial-setup/02-install-dependencies.sh
 
-docker compose up -d
-
-./scripts/01-suricata/00-install.sh
-./scripts/01-suricata/01-config.sh
-
 echo ""
 echo "=================================================="
-echo "   DEPLOY PROCESS COMPLETED SUCCESSFULLY!"
+echo "   PLEASE LOG OUT AND LOG IN AGAIN!"
+echo "then run the following command:"
+echo "   ./deploy-02.sh"
 echo "=================================================="
+
