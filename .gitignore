@@ -1,2 +1,10 @@
 .env
 /tmp
+**/.env
+**/*.key
+**/private/
+*.p12
+*.pfx
+backups/
+*.sql
+*.sql.gz
