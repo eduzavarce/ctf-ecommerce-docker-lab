@@ -106,7 +106,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 | **WordPress (Web)** | `80` (HTTP) / `443` (HTTPS) | `80` / `443` | **Sí** | Acceso público de los clientes al e-commerce (*DMZ*). |
 | **MariaDB (Base de datos)** | Ninguno | `3306` | **No** | Uso interno exclusivo para la persistencia de datos (*Red Privada aislada*). |
 
-[Screenshots comprobaci´ón de configuraciones](docs/validations/fase2/evidencias.md)
+[Screenshots comprobación de configuraciones](docs/mf0488/validations/fase2/evidencias.md)
 
 ## 6. Mapa de Evidencias 
 
@@ -117,7 +117,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 | **Actividad de Contenedores** | Docker Engine | `/var/lib/docker/containers/` o `docker logs` | Timestamp, ID del contenedor, Mensajes de error o arranque. |
 
 ### Evidencias:
-[Screenshots de los logs](docs/validations/fase3/evidencias.md)
+[Screenshots de los logs](docs/mf0488/validations/fase3/evidencias.md)
 
 
 ---
@@ -130,7 +130,7 @@ Elegido el IDS suricata para monitorear y generar alertas de actividad en la sub
 
 Agregada una regla para alertar peticiones de ICMP (ping).
 
-[Configuración y pruebas](docs/validations/fase4/evidencias.md)
+[Configuración y pruebas](docs/mf0488/validations/fase4/evidencias.md)
 
 ---
 
@@ -147,6 +147,6 @@ Agregada una regla para alertar peticiones de ICMP (ping).
 | **Ping** | Suricata (`/var/log/suricata/fast.log`) | **Sí** | Alerta generada por regla propia (`sid:1000001`), IP origen del escaneo/ping, IP destino (`192.168.1.39`), protocolo ICMP. |
 | **Nmap** | Suricata / Logs del sistema / Web logs | **Sí** | Identificación de barrido de puertos, peticiones múltiples concurrentes, registro de conexiones entrantes a servicios expuestos. |
 
-[Screenshot de resultados](docs/validations/fase5/evidencias.md)
+[Screenshot de resultados](docs/mf0488/validations/fase5/evidencias.md)
 ---
 
