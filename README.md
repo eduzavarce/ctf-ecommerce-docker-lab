@@ -260,4 +260,9 @@ cp template.env .env
 * **Aislamiento de la CA:** La clave privada de la Autoridad Certificadora (`ca.key`) permanece aislada en el Entorno CA y nunca es expuesta en la red pública.
 * **Permisos y Umask:** Todos los scripts aplican restricciones estrictas de privilegios (`umask 077`) para garantizar que las claves privadas de servidor y CA sean inaccesibles para usuarios no autorizados.
 
+### 5. Evidencias y capturas de pantalla
+
+- [Evidencias de la Autoridad Certificadora (CA)](docs/mf0489/validations/fase2/ca/evidencias.md)
+- [Evidencias del Servidor](docs/mf0489/validations/fase2/server/evidencias.md)
+
 </details>
