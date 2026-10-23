@@ -61,3 +61,42 @@ Al ser un certificado autofirmado, la verificación de la cadena de confianza se
 
 ![img.png](media/img06.png)
 
+___
+## Firma
+## 1. Verificación de la recepcion de la Solicitud de Firma de Certificado (CSR) del Servidor
+```bash
+ls -la solicitudes/
+```
+  ![img_2.png](img_2.png)
+
+## 2. Crear el fichero de extensiones temporal (servidor.ext) para el nuevo dominio:
+
+![img_1.png](img_1.png)
+
+## 3. Firmar la Solicitud de Firma de Certificado (CSR) del Servidor con la CA
+```bash
+openssl x509 -req \
+  -in solicitudes/servidor.csr \
+  -CA ca.crt \
+  -CAkey private/ca.key \
+  -CAcreateserial \
+  -out emitidos/servidor.crt \
+  -days 365 \
+  -sha256 \
+  -extfile servidor.ext
+```
+- Firma de la CSR del Servidor con la CA:
+- ![img_3.png](img_3.png)
+
+## 4. Inspeccionar y verificar el certificado del Servidor emitido por la CA
+```bash
+openssl verify -CAfile ca.crt emitidos/servidor.crt
+```
+![img_4.png](img_4.png)
+
+## 5. Enviar el certificado del Servidor emitido por la CA al Servidor para su instalación
+```bash
+scp emitidos/servidor.crt ca.crt ${SERVER_USER}@${SERVER_ADDRESS}:~/mf0489/
+
+```
+![img_6.png](img_6.png)

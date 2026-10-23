@@ -197,28 +197,67 @@ graph TD
         end
     end
 
-    CA -.->|"Emisión de Certificado (Fuera de línea)"| NGINX
+    CA -.->|"Emisión de Certificado (SCP Automatizado)"| NGINX
     NGINX -.->|"Proxy Pass (HTTP)"| WEB
     WEB -.->|"Consulta / Datos"| DB
 
     class DMZ dmzStyle;
     class PRIV privStyle;
 ```
+### 2. Configuración de Dominio y DNS del Proyecto
 
-### Punto de terminación TLS
-La terminación de las comunicaciones cifradas (TLS) se implementa en el borde perimetral del servidor, concretamente en el **Nginx Reverse Proxy**. Toda conexión entrante realizada por los clientes a través de la red exterior mediante el puerto `443` (HTTPS) finaliza en este componente. Nginx se encarga de negociar los algoritmos de cifrado, presentar el certificado digital del servidor y descifrar la carga útil del tráfico web.
+* **Nombre FQDN Seleccionado:** `portal.artimar.thm`
+* **Justificación del TLD (`.thm`):**
+  Aunque el estándar de la IETF (RFC 2606) reserva el sufijo `.test` para entornos de pruebas locales, se ha adoptado deliberadamente el TLD no estándar **`.thm`**. Esta decisión responde a que la arquitectura de este proyecto y la máquina virtual resultante han sido diseñadas para ser exportadas y desplegadas como un escenario de laboratorio CTF en la plataforma **TryHackMe**, la cual utiliza por convención este dominio de nivel superior en sus entornos de simulación.
+* **Consistencia de Identidad:** El FQDN `portal.artimar.thm` se utiliza de forma estricta y uniforme en:
+   - El *Common Name* (CN) y la extensión *Subject Alternative Name* (SAN) de la CSR del servidor.
+   - El archivo de extensiones `servidor.ext` utilizado durante la firma por la CA.
+   - El certificado X.509 final emitido (`servidor.crt`).
+   - Las validaciones criptográficas de hostname mediante OpenSSL (`-verify_hostname portal.artimar.thm`).
+  
+### 3. Guía de Automatización y Despliegue PKI (Fase 2)
 
-### Gestión de certificados y Autoridad Certificadora (CA)
-* **Nginx Reverse Proxy:** Gestiona en tiempo de ejecución la presentación del certificado digital del servidor (`servidor.crt`) y su clave privada asociada (`servidor.key`), la cual permanecerá con permisos restringidos de lectura dentro del sistema host/contenedor.
-  * **Autoridad Certificadora (CA de Laboratorio):** La CA se mantiene estrictamente en un entorno separado e independiente fuera de la máquina virtual/servidor CTF de producción. La clave privada de la CA (`ca.key`) nunca se transfiere a la infraestructura pública o expuesta. Únicamente se exportará el certificado público de la CA (`ca.crt`) hacia el servidor o los clientes para establecer la cadena de confianza.
+El despliegue y ciclo de vida de la infraestructura de clave pública (PKI) se gestiona de forma modular a través de scripts dedicados ubicados en `scripts/02-pki/`, apoyados por un sistema centralizado de carga de variables de entorno (`load-env-variables.sh`).
 
-### Comunicaciones internas y redes Docker
-* **Red DMZ (`172.20.10.0/24`):** Alberga al proxy inverso Nginx y al servidor de aplicaciones web (`WEB-01` WordPress). La comunicación posterior al Nginx hacia WordPress se realiza mediante tráficos en texto plano (HTTP) dentro de la red interna de Docker. Esto evita sobrecargas innecesarias de re-cifrado interno mientras la aplicación se mantiene aislada del exterior.
-  * **Red Privada (`172.20.20.0/24`):** Aloja la base de datos MariaDB (`DB-01`). WordPress se comunica directamente con la base de datos a través de esta red dedicada, estando la base de datos completamente incomunicada respecto al exterior y a la red DMZ no autorizada.
+#### Requisito previo: Configuración de Entorno
+Asegúrese de configurar sus parámetros de red y dominio en el archivo de entorno antes de ejecutar los scripts:
+```bash
+cp template.env .env
+```
+*(Edite `.env` para ajustar `DOMAIN_NAME`, `CA_MACHINE_ADDRESS`, `CA_MACHINE_USER`, `SERVER_ADDRESS` y `SERVER_USER`).*
 
-### Visibilidad del Sistema de Detección de Intrusiones (Suricata)
-**Suricata** permanece configurado en la interfaz de red física exterior del sistema host (`enp2s0`).
-* **Tráfico observable:** Suricata inspecciona las tramas de red a nivel perimetral, detectando los handshakes TLS, las IPs de origen/destino, puertos de conexión (443/22) e intentos de escaneo de puertos.
-  * **Limitación de inspección profunda:** Dado que la conexión se encuentra cifrada entre el cliente y Nginx, Suricata no podrá realizar inspección profunda de paquetes (DPI) sobre las URIs o contenido HTTP enviado dentro del túnel HTTPS, permitiendo posteriormente comparar y correlacionar lo observado por el IDS frente a los registros de acceso descifrados de Nginx.
+#### Secuencia de Ejecución del Workflow PKI:
+
+1. **Inicialización de la Autoridad Certificadora (Entorno CA):**
+   Crea la estructura de directorios con máscara segura (`umask 077`), genera la clave privada de la CA cifrada con AES-256 y emite el certificado raíz autofirmado (`ca.crt`):
+   ```bash
+   ./scripts/02-pki/00-ca-setup.sh
+   ```
+
+2. **Generación y Envío Automático de la CSR (Entorno Servidor):**
+   Genera la clave privada del servidor (RSA 3072) y la Solicitud de Firma de Certificado (CSR) incorporando el *Subject Alternative Name* (SAN) obligatorio para el dominio, enviándola automáticamente por `scp` a la máquina CA:
+   ```bash
+   ./scripts/02-pki/01-server-cert.sh
+   ```
+
+3. **Firma y Retorno Automático de Certificados (Entorno CA):**
+   Procesar la CSR recibida en la CA, valida las restricciones de extensión para servidores web (`serverAuth` y SAN) y devuelve automáticamente de vuelta mediante `scp` el certificado firmado (`servidor.crt`) y el certificado raíz (`ca.crt`) al servidor:
+   ```bash
+   ./scripts/02-pki/02-sign-cert.sh
+   ```
+
+4. **Instalación y Validación Criptográfica Definitiva (Entorno Servidor):**
+   Instala los certificados en las rutas protegidas del sistema operativo (`/etc/ssl/certs/`, `/etc/ssl/private/`), establece los permisos estrictos (`600`/`644`), verifica la cadena de confianza con OpenSSL (comprobando éxito y fallos por *hostname mismatch*) y valida las correspondencias de hash de las claves públicas antes de limpiar los temporales:
+   ```bash
+   ./scripts/02-pki/03-server-install.sh
+   ```
+
+---
+
+### 4. Especificaciones Técnicas y de Seguridad
+
+* **Terminación TLS:** Realizada en el borde perimetral (Nginx Reverse Proxy) para el puerto `443` (HTTPS).
+* **Aislamiento de la CA:** La clave privada de la Autoridad Certificadora (`ca.key`) permanece aislada en el Entorno CA y nunca es expuesta en la red pública.
+* **Permisos y Umask:** Todos los scripts aplican restricciones estrictas de privilegios (`umask 077`) para garantizar que las claves privadas de servidor y CA sean inaccesibles para usuarios no autorizados.
 
 </details>
