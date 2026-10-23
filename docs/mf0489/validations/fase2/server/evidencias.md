@@ -1,25 +1,31 @@
 # Evidencias de Validación - Fase 2 - Servidor
+
 ## 1. Preparacion del directorio
+
 ```bash
 umask 077
 mkdir -p ~/mf0489
 cd ~/mf0489
 ls -la
 ```
+
 - Creación del directorio de trabajo con permisos restrictivos: 
 
     ![img.png](media/img.png)
 
 ## 2. Generación de la clave privada del Servidor
+
 ```bash
 openssl genpkey -algorithm RSA -out servidor.key -pkeyopt rsa_keygen_bits:3072
 chmod 600 servidor.key
 ```
+
 - Archivo generado: `servidor.key` con permisos restrictivos: `chmod 600 servidor.key`
 
     ![img.png](media/img01.png)
 
 ## 3. Generación de la Solicitud de Firma de Certificado (CSR) del Servidor
+
 ```bash
 DOMAIN="portal.artimar.thm"
 openssl req -new \
@@ -29,7 +35,9 @@ openssl req -new \
   -subj "/CN=${DOMAIN}" \
   -addext "subjectAltName=DNS:${DOMAIN}"
 ```
+
 - Ejecución del comando para generar la CSR del Servidor:
+
     ![img.png](media/img02.png)
 
 - Archivo generado: `servidor.csr` con permisos restrictivos: `chmod 600 servidor.csr`
@@ -37,12 +45,17 @@ openssl req -new \
     ![img.png](media/img03.png)
 
 ## 4. Inspeccionar y verificar la Solicitud de Firma de Certificado (CSR) del Servidor
+
 ```bash
 openssl req -in servidor.csr -text -noout -verify
 ```
+
 - Verificación de la CSR del Servidor:
+
     ![img_1.png](media/img_1.png)
+
 ## 5. Transferir la CSR del Servidor a la CA para su firma
+
 ```bash
 scp servidor.csr ${CA_MACHINE_USER}@${CA_MACHINE_ADDRESS}:~/ca_root-pki/ca/solicitudes/
 ```
@@ -55,6 +68,7 @@ scp servidor.csr ${CA_MACHINE_USER}@${CA_MACHINE_ADDRESS}:~/ca_root-pki/ca/solic
 ## 7. Instalación de los certificados en las rutas protegidas del Servidor
 
 ![img_4.png](media/img_4.png)
+
 ```bash
 cd ~/mf0489
 sudo mkdir -p /etc/ssl/mf0489
@@ -62,21 +76,26 @@ sudo install -o root -g root -m 600 servidor.key /etc/ssl/private/servidor.key
 sudo install -o root -g root -m 644 servidor.crt /etc/ssl/certs/servidor.crt
 sudo install -o root -g root -m 644 ca.crt /etc/ssl/mf0489/ca.crt
 ```
+
 ![img_5.png](media/img_5.png)
+
 ![img_6.png](media/img_6.png)
 
 ## 8. Verificación sin confiar en la CA:
+
 ```bash
 openssl verify \
   -purpose sslserver \
   -verify_hostname portal.artimar.thm \
   /etc/ssl/certs/servidor.crt
   ```
+
 ![img_7.png](media/img_7.png)
 
 El certificado es incorrecto porque no está verificado por ninguna autoridad
 
 ## 9. Verificación con confianza en la CA:
+
 ```bash
 sudo openssl verify \
   -CAfile /etc/ssl/mf0489/ca.crt \
@@ -84,11 +103,13 @@ sudo openssl verify \
   -verify_hostname portal.artimar.thm \
   /etc/ssl/certs/servidor.crt
   ```
+
 ![img_8.png](media/img_8.png)
 
 Ejecutado precedido de `sudo`, ya que el usuario no tiene permisos para acceder a la ca.crt, "... El certificado de la CA se almacena aquí para verificaciones, pero no se incorpora automáticamente al almacén global de confianza."
 
 ## 10. Provocar fallo de identidad:
+
 ```bash
 sudo openssl verify \
   -CAfile /etc/ssl/mf0489/ca.crt \
@@ -96,12 +117,15 @@ sudo openssl verify \
   -verify_hostname portal.erroneo.thm \
   /etc/ssl/certs/servidor.crt
   ```
+
 ![img_9.png](media/img_9.png)
 
 ## 11. Verificación de fechas de validez:
+
 ```bash
 openssl x509 -in /etc/ssl/certs/servidor.crt -noout -startdate -enddate
   ```
+
 ![img_10.png](media/img_10.png)
 
 ```bash
@@ -111,6 +135,7 @@ openssl x509 -in /etc/ssl/certs/servidor.crt -noout -checkend 0
 ![img_11.png](media/img_11.png)
 
 ## 12. Comprobar la correspondencia de la clave privada y el certificado:
+
 ```bash
 from_private=$(sudo openssl pkey -in /etc/ssl/private/servidor.key -pubout -outform DER | openssl dgst -sha256)
 from_public=$(openssl x509 -in /etc/ssl/certs/servidor.crt -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256)
@@ -122,9 +147,10 @@ else
     exit 1
 fi
 ```
+
 ![img_12.png](media/img_12.png)
 
-##13.  Tabla de Comprobaciones de Validación PKI
+## 13.  Tabla de Comprobaciones de Validación PKI
 
 **Dominio:** `portal.artimar.thm`
 
