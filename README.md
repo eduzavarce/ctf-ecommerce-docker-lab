@@ -5,9 +5,14 @@
 - **Temática:** Despliegue de comercio electrónico local de artesanía marinera, decoración y cerámica con WordPress y MySQL sobre una arquitectura de red segmentada.
 
 ---
-## 1. Guía de Instalación y Despliegue
+## MF0488 — Servidor, Monitorización e Infraestructura Docker
 
-### Prerequisitos: 
+<details>
+<summary>Detalles MF0488 </summary>
+
+### 1. Guía de Instalación y Despliegue
+
+#### Prerequisitos: 
 - Servidor Ubuntu 22.04.5 LTS.
 
 Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
@@ -44,12 +49,12 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
     ```
 ---
 
-## 2. Descripción breve del sistema
+### 2. Descripción breve del sistema
 La infraestructura representa un servidor virtual corporativo expuesto a internet simulando el entorno de producción de una tienda artesanal local. El servicio presta una plataforma web de comercio electrónico accesible públicamente para clientes y administración. Gestiona información ficticia de catálogo de productos artesanales, altas de usuarios, pedidos y transacciones comerciales simuladas. La aplicación web (WordPress) funciona como interfaz de cara al cliente y pasarela de gestión del negocio, operando de forma aislada de los datos críticos para garantizar la resiliencia y la seguridad de la información.
 
 ---
 
-## 3. Tecnologías y Componentes Previstos
+### 3. Tecnologías y Componentes Previstos
 
 | Componente                 | Tecnología                | Función                                                                                            |
 | :------------------------- | :------------------------ | :------------------------------------------------------------------------------------------------- |
@@ -62,7 +67,7 @@ La infraestructura representa un servidor virtual corporativo expuesto a interne
 
 ---
 
-## 4. Arquitectura inicial
+### 4. Arquitectura inicial
 
 ```mermaid
 graph TD
@@ -96,7 +101,7 @@ graph TD
     WEB -.->|Consulta / Datos| DB
 ```
 
-## 5. Configuración de Red y Puertos
+### 5. Configuración de Red y Puertos
 
 Para garantizar la seguridad y la segmentación del tráfico, los puertos se han configurado minimizando la exposición pública de los servicios internos:
 
@@ -108,7 +113,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 
 [Screenshots comprobación de configuraciones](docs/mf0488/validations/fase2/evidencias.md)
 
-## 6. Mapa de Evidencias 
+### 6. Mapa de Evidencias 
 
 | Acción / Evento | Activo / Origen | Ubicación del Registro (Ruta / Servicio) | Datos Clave a Identificar |
 | :--- | :--- | :--- | :--- |
@@ -116,15 +121,15 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 | **Petición HTTP (Correcta / Errónea)** | Web (`WEB-01`) / WordPress | Logs del contenedor Docker (`shop-wordpress`) | IP de origen, Hora, Método HTTP, URL, Código de Estado (200, 404...). |
 | **Actividad de Contenedores** | Docker Engine | `/var/lib/docker/containers/` o `docker logs` | Timestamp, ID del contenedor, Mensajes de error o arranque. |
 
-### Evidencias:
+#### Evidencias:
 [Screenshots de los logs](docs/mf0488/validations/fase3/evidencias.md)
 
 
 ---
 
-## 7. Monitorización / IDS 
+### 7. Monitorización / IDS 
 
-### Suricata:
+#### Suricata:
 
 Elegido el IDS suricata para monitorear y generar alertas de actividad en la subred.
 
@@ -134,7 +139,7 @@ Agregada una regla para alertar peticiones de ICMP (ping).
 
 ---
 
-## 8. Pruebas realizadas al entorno
+### 8. Pruebas realizadas al entorno
 
 
 | Acción | Fuente Principal de Registro | Detectada / Registrada | Información Obtenida (Detalles Clave) |
@@ -148,5 +153,72 @@ Agregada una regla para alertar peticiones de ICMP (ping).
 | **Nmap** | Suricata / Logs del sistema / Web logs | **Sí** | Identificación de barrido de puertos, peticiones múltiples concurrentes, registro de conexiones entrantes a servicios expuestos. |
 
 [Screenshot de resultados](docs/mf0488/validations/fase5/evidencias.md)
+
+
 ---
 
+</details>
+
+## MF0489 — Fase 2: Autoridad Certificadora (CA) y Certificados TLS
+<details>
+<summary>Detalles MF0489</summary>
+
+## 1. Arquitectura actualizada
+
+```mermaid
+graph TD
+    classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+    classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
+    classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
+    classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
+    classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
+    classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef caStyle fill:#e6ccff,stroke:#333,stroke-width:2px,color:#000;
+
+    CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico HTTPS / Puerto 443| NGINX
+    ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH / Puerto 22| SSH
+
+    subgraph EXTERNAL ["Entorno Externo / Laboratorio"]
+        CA["Autoridad Certificadora (CA Lab)<br/>(Fuera de la VM CTF)"]:::caStyle
+    end
+
+    subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
+        SSH["SSH Server (OpenSSH)"]:::hostStyle
+        Suricata["Suricata IDS (enp2s0)"]:::hostStyle
+        
+        subgraph DOCKER ["Docker Engine Bridge"]
+            subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
+                NGINX["Nginx Reverse Proxy<br/>(Terminación TLS - Port 443)"]:::serviceStyle
+                WEB["WEB-01 WordPress (172.20.10.2)<br/>(Tráfico HTTP interno)"]:::serviceStyle
+            end
+            subgraph PRIV ["Red Privada (172.20.20.0/24)"]
+                DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
+            end
+        end
+    end
+
+    CA -.->|"Emisión de Certificado (Fuera de línea)"| NGINX
+    NGINX -.->|"Proxy Pass (HTTP)"| WEB
+    WEB -.->|"Consulta / Datos"| DB
+
+    class DMZ dmzStyle;
+    class PRIV privStyle;
+```
+
+### Punto de terminación TLS
+La terminación de las comunicaciones cifradas (TLS) se implementa en el borde perimetral del servidor, concretamente en el **Nginx Reverse Proxy**. Toda conexión entrante realizada por los clientes a través de la red exterior mediante el puerto `443` (HTTPS) finaliza en este componente. Nginx se encarga de negociar los algoritmos de cifrado, presentar el certificado digital del servidor y descifrar la carga útil del tráfico web.
+
+### Gestión de certificados y Autoridad Certificadora (CA)
+* **Nginx Reverse Proxy:** Gestiona en tiempo de ejecución la presentación del certificado digital del servidor (`servidor.crt`) y su clave privada asociada (`servidor.key`), la cual permanecerá con permisos restringidos de lectura dentro del sistema host/contenedor.
+  * **Autoridad Certificadora (CA de Laboratorio):** La CA se mantiene estrictamente en un entorno separado e independiente fuera de la máquina virtual/servidor CTF de producción. La clave privada de la CA (`ca.key`) nunca se transfiere a la infraestructura pública o expuesta. Únicamente se exportará el certificado público de la CA (`ca.crt`) hacia el servidor o los clientes para establecer la cadena de confianza.
+
+### Comunicaciones internas y redes Docker
+* **Red DMZ (`172.20.10.0/24`):** Alberga al proxy inverso Nginx y al servidor de aplicaciones web (`WEB-01` WordPress). La comunicación posterior al Nginx hacia WordPress se realiza mediante tráficos en texto plano (HTTP) dentro de la red interna de Docker. Esto evita sobrecargas innecesarias de re-cifrado interno mientras la aplicación se mantiene aislada del exterior.
+  * **Red Privada (`172.20.20.0/24`):** Aloja la base de datos MariaDB (`DB-01`). WordPress se comunica directamente con la base de datos a través de esta red dedicada, estando la base de datos completamente incomunicada respecto al exterior y a la red DMZ no autorizada.
+
+### Visibilidad del Sistema de Detección de Intrusiones (Suricata)
+**Suricata** permanece configurado en la interfaz de red física exterior del sistema host (`enp2s0`).
+* **Tráfico observable:** Suricata inspecciona las tramas de red a nivel perimetral, detectando los handshakes TLS, las IPs de origen/destino, puertos de conexión (443/22) e intentos de escaneo de puertos.
+  * **Limitación de inspección profunda:** Dado que la conexión se encuentra cifrada entre el cliente y Nginx, Suricata no podrá realizar inspección profunda de paquetes (DPI) sobre las URIs o contenido HTTP enviado dentro del túnel HTTPS, permitiendo posteriormente comparar y correlacionar lo observado por el IDS frente a los registros de acceso descifrados de Nginx.
+
+</details>
