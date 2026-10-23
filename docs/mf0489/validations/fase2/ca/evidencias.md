@@ -67,11 +67,11 @@ ___
 ```bash
 ls -la solicitudes/
 ```
-  ![img_2.png](img_2.png)
+  ![img_2.png](media/img_2.png)
 
 ## 2. Crear el fichero de extensiones temporal (servidor.ext) para el nuevo dominio:
 
-![img_1.png](img_1.png)
+![img_1.png](media/img_1.png)
 
 ## 3. Firmar la Solicitud de Firma de Certificado (CSR) del Servidor con la CA
 ```bash
@@ -86,17 +86,17 @@ openssl x509 -req \
   -extfile servidor.ext
 ```
 - Firma de la CSR del Servidor con la CA:
-- ![img_3.png](img_3.png)
+- ![img_3.png](media/img_3.png)
 
 ## 4. Inspeccionar y verificar el certificado del Servidor emitido por la CA
 ```bash
 openssl verify -CAfile ca.crt emitidos/servidor.crt
 ```
-![img_4.png](img_4.png)
+![img_4.png](media/img_4.png)
 
 ## 5. Enviar el certificado del Servidor emitido por la CA al Servidor para su instalación
 ```bash
 scp emitidos/servidor.crt ca.crt ${SERVER_USER}@${SERVER_ADDRESS}:~/mf0489/
 
 ```
-![img_6.png](img_6.png)
+![img_6.png](media/img_6.png)

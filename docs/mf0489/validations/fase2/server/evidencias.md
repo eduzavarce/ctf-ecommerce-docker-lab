@@ -41,20 +41,20 @@ openssl req -new \
 openssl req -in servidor.csr -text -noout -verify
 ```
 - Verificación de la CSR del Servidor:
-    ![img_1.png](img_1.png)
+    ![img_1.png](media/img_1.png)
 ## 5. Transferir la CSR del Servidor a la CA para su firma
 ```bash
 scp servidor.csr ${CA_MACHINE_USER}@${CA_MACHINE_ADDRESS}:~/ca_root-pki/ca/solicitudes/
 ```
 
-   ![img_3.png](img_3.png)
+   ![img_3.png](media/img_3.png)
 
 ## 6. Verificación y firma de la CSR del Servidor en la CA
 [Verificación y firma de la CSR del Servidor en la CA](../ca/evidencias.md#firma)
 
 ## 7. Instalación de los certificados en las rutas protegidas del Servidor
 
-![img_4.png](img_4.png)
+![img_4.png](media/img_4.png)
 ```bash
 cd ~/mf0489
 sudo mkdir -p /etc/ssl/mf0489
@@ -62,8 +62,8 @@ sudo install -o root -g root -m 600 servidor.key /etc/ssl/private/servidor.key
 sudo install -o root -g root -m 644 servidor.crt /etc/ssl/certs/servidor.crt
 sudo install -o root -g root -m 644 ca.crt /etc/ssl/mf0489/ca.crt
 ```
-![img_5.png](img_5.png)
-![img_6.png](img_6.png)
+![img_5.png](media/img_5.png)
+![img_6.png](media/img_6.png)
 
 ## 8. Verificación sin confiar en la CA:
 ```bash
@@ -72,7 +72,7 @@ openssl verify \
   -verify_hostname portal.artimar.thm \
   /etc/ssl/certs/servidor.crt
   ```
-![img_7.png](img_7.png)
+![img_7.png](media/img_7.png)
 
 El certificado es incorrecto porque no está verificado por ninguna autoridad
 
@@ -84,7 +84,7 @@ sudo openssl verify \
   -verify_hostname portal.artimar.thm \
   /etc/ssl/certs/servidor.crt
   ```
-![img_8.png](img_8.png)
+![img_8.png](media/img_8.png)
 
 Ejecutado precedido de `sudo`, ya que el usuario no tiene permisos para acceder a la ca.crt, "... El certificado de la CA se almacena aquí para verificaciones, pero no se incorpora automáticamente al almacén global de confianza."
 
@@ -96,19 +96,19 @@ sudo openssl verify \
   -verify_hostname portal.erroneo.thm \
   /etc/ssl/certs/servidor.crt
   ```
-![img_9.png](img_9.png)
+![img_9.png](media/img_9.png)
 
 ## 11. Verificación de fechas de validez:
 ```bash
 openssl x509 -in /etc/ssl/certs/servidor.crt -noout -startdate -enddate
   ```
-![img_10.png](img_10.png)
+![img_10.png](media/img_10.png)
 
 ```bash
 openssl x509 -in /etc/ssl/certs/servidor.crt -noout -checkend 0
 ```
 
-![img_11.png](img_11.png)
+![img_11.png](media/img_11.png)
 
 ## 12. Comprobar la correspondencia de la clave privada y el certificado:
 ```bash
@@ -122,7 +122,7 @@ else
     exit 1
 fi
 ```
-![img_12.png](img_12.png)
+![img_12.png](media/img_12.png)
 
 ##13.  Tabla de Comprobaciones de Validación PKI
 
