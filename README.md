@@ -12,7 +12,7 @@
 
 ### 1. Guía de Instalación y Despliegue
 
-#### Prerequisitos: 
+#### Prerequisitos:
 - Servidor Ubuntu 22.04.5 LTS.
 
 Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 22.04.5 LTS, ejecute los siguientes pasos secuenciales desde la raíz del repositorio:
@@ -25,17 +25,17 @@ Para replicar y desplegar la infraestructura sobre un servidor base con Ubuntu 2
     ```
 
 2. **Configurar las variables de entorno:**
-    
-    Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
+
+   Genere su archivo de configuración .env utilizando como base la plantilla proporcionada (template.env):
 
     ```bash
     cp template.env .env
     ```
-    (Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
+   (Modifique los parámetros y credenciales dentro de .env según sea necesario para su entorno).
 
 3. **Desplegar los contenedores:**
 
-    Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
+   Inicie la orquestación de servicios en segundo plano mediante Docker Compose:
 
     ```bash
     docker compose up -d
@@ -71,34 +71,34 @@ La infraestructura representa un servidor virtual corporativo expuesto a interne
 
 ```mermaid
 graph TD
-    classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
-    classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
-    classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
-    classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
-    classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
-    classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+   classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+   classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
+   classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
+   classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
+   classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
+   classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
 
-    CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico Web / HTTPS| WEB
-    ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH| SSH
+   CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico Web / HTTPS| WEB
+   ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH| SSH
 
-    subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
-        SSH["SSH Server (OpenSSH)"]:::hostStyle
-        Suricata["Suricata IDS (enp1s0)"]:::hostStyle
-        
-        subgraph DOCKER ["Docker Engine Bridge"]
-            subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
-                WEB["WEB-01 WordPress (172.20.10.2)"]:::serviceStyle
-            end
-            subgraph PRIV ["Red Privada (172.20.20.0/24)"]
-                DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
-            end
-        end
-    end
+   subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
+      SSH["SSH Server (OpenSSH)"]:::hostStyle
+      Suricata["Suricata IDS (enp1s0)"]:::hostStyle
 
-    class DMZ dmzStyle;
-    class PRIV privStyle;
+      subgraph DOCKER ["Docker Engine Bridge"]
+         subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
+            WEB["WEB-01 WordPress (172.20.10.2)"]:::serviceStyle
+         end
+         subgraph PRIV ["Red Privada (172.20.20.0/24)"]
+            DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
+         end
+      end
+   end
 
-    WEB -.->|Consulta / Datos| DB
+   class DMZ dmzStyle;
+   class PRIV privStyle;
+
+   WEB -.->|Consulta / Datos| DB
 ```
 
 ### 5. Configuración de Red y Puertos
@@ -113,7 +113,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 
 [Screenshots comprobación de configuraciones](docs/mf0488/validations/fase2/evidencias.md)
 
-### 6. Mapa de Evidencias 
+### 6. Mapa de Evidencias
 
 | Acción / Evento | Activo / Origen | Ubicación del Registro (Ruta / Servicio) | Datos Clave a Identificar |
 | :--- | :--- | :--- | :--- |
@@ -126,7 +126,7 @@ Para garantizar la seguridad y la segmentación del tráfico, los puertos se han
 
 ---
 
-### 7. Monitorización / IDS 
+### 7. Monitorización / IDS
 
 #### Suricata:
 
@@ -164,42 +164,42 @@ Agregada una regla para alertar peticiones de ICMP (ping).
 
 ```mermaid
 graph TD
-    classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
-    classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
-    classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
-    classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
-    classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
-    classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
-    classDef caStyle fill:#e6ccff,stroke:#333,stroke-width:2px,color:#000;
+   classDef clientStyle fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+   classDef adminStyle fill:#ff9999,stroke:#333,stroke-width:2px,color:#000;
+   classDef hostStyle fill:#bbf,stroke:#333,stroke-width:2px,color:#000;
+   classDef dmzStyle fill:#ffcc99,stroke:#333,stroke-width:2px,color:#000;
+   classDef privStyle fill:#bfffbf,stroke:#333,stroke-width:2px,color:#000;
+   classDef serviceStyle fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+   classDef caStyle fill:#e6ccff,stroke:#333,stroke-width:2px,color:#000;
 
-    CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico HTTPS / Puerto 443| NGINX
-    ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH / Puerto 22| SSH
+   CLIENTE(("CLIENTE INTERNET")):::clientStyle -->|Tráfico HTTPS / Puerto 443| NGINX
+   ADMIN(("ADMINISTRADORES")):::adminStyle -->|Acceso Remoto SSH / Puerto 22| SSH
 
-    subgraph EXTERNAL ["Entorno Externo / Laboratorio"]
-        CA["Autoridad Certificadora (CA Lab)<br/>(Fuera de la VM CTF)"]:::caStyle
-    end
+   subgraph EXTERNAL ["Entorno Externo / Laboratorio"]
+      CA["Autoridad Certificadora (CA Lab)<br/>(Fuera de la VM CTF)"]:::caStyle
+   end
 
-    subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
-        SSH["SSH Server (OpenSSH)"]:::hostStyle
-        Suricata["Suricata IDS (enp2s0)"]:::hostStyle
-        
-        subgraph DOCKER ["Docker Engine Bridge"]
-            subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
-                NGINX["Nginx Reverse Proxy<br/>(Terminación TLS - Port 443)"]:::serviceStyle
-                WEB["WEB-01 WordPress (172.20.10.2)<br/>(Tráfico HTTP interno)"]:::serviceStyle
-            end
-            subgraph PRIV ["Red Privada (172.20.20.0/24)"]
-                DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
-            end
-        end
-    end
+   subgraph HOST ["Ubuntu Server 22.04 (192.168.1.39)"]
+      SSH["SSH Server (OpenSSH)"]:::hostStyle
+      Suricata["Suricata IDS (enp2s0)"]:::hostStyle
 
-    CA -.->|"Emisión de Certificado (SCP Automatizado)"| NGINX
-    NGINX -.->|"Proxy Pass (HTTP)"| WEB
-    WEB -.->|"Consulta / Datos"| DB
+      subgraph DOCKER ["Docker Engine Bridge"]
+         subgraph DMZ ["Red DMZ (172.20.10.0/24)"]
+            NGINX["Nginx Reverse Proxy<br/>(Terminación TLS - Port 443)"]:::serviceStyle
+            WEB["WEB-01 WordPress (172.20.10.2)<br/>(Tráfico HTTP interno)"]:::serviceStyle
+         end
+         subgraph PRIV ["Red Privada (172.20.20.0/24)"]
+            DB[("DB-01 MariaDB (172.20.20.2)")]:::serviceStyle
+         end
+      end
+   end
 
-    class DMZ dmzStyle;
-    class PRIV privStyle;
+   CA -.->|"Emisión de Certificado (SCP Automatizado)"| NGINX
+   NGINX -.->|"Proxy Pass (HTTP)"| WEB
+   WEB -.->|"Consulta / Datos"| DB
+
+   class DMZ dmzStyle;
+   class PRIV privStyle;
 ```
 
 ### 2. Configuración de Dominio y DNS del Proyecto
@@ -265,7 +265,7 @@ cp template.env .env
 
 ## Implementación de HTTPS con Nginx Reverse Proxy y Docker
 
-### 1. Decisiones de Arquitectura y Adaptación de Componentes 
+### 1. Decisiones de Arquitectura y Adaptación de Componentes
 
 Para pasar del modelo inicial expuesto en HTTP a una arquitectura segura con HTTPS de extremo a extremo, se incorporan las siguientes modificaciones fundamentales en la infraestructura de contenedores:
 
@@ -276,7 +276,7 @@ Para pasar del modelo inicial expuesto en HTTP a una arquitectura segura con HTT
    - **Archivos y Certificados:** Monta en modo solo lectura (`:ro`) los certificados emitiéndose en la Fase 2 instalados en `/etc/ssl/certs/servidor.crt` y `/etc/ssl/private/servidor.key`.
 
 2. **Contenedor Web Backend (`web-01`):**
-   - **Comunicación Interna:** La aplicación WordPress deja de publicar puertos directos (`80:80` / `443:443`) hacia la interfaz de la máquina virtual/host. 
+   - **Comunicación Interna:** La aplicación WordPress deja de publicar puertos directos (`80:80` / `443:443`) hacia la interfaz de la máquina virtual/host.
    - **Protocolo Interno:** La aplicación recibe las peticiones procedentes de Nginx a través del protocolo **HTTP interno en el puerto 80 del contenedor**.
    - **Redes:** Permanece conectada a `dmz-net` para ser alcanzable por el proxy y a `priv-net` para comunicarse con la base de datos.
 
@@ -326,7 +326,7 @@ La arquitectura final introduce un proxy inverso perimetral (`shop-proxy`) basad
 ### 4. Rutas de los certificados y permisos aplicados
 Los certificados institucionales generados en la PKI se encuentran instalados en las rutas protegidas del sistema operativo host y montados de forma segura en el contenedor perimetral:
 * **Certificado Público del Servidor:** `/etc/ssl/certs/servidor.crt` (Permisos: `644`)
-* **Clave Privada del Servidor:** `/etc/ssl/private/servidor.key` (Permisos estrictos: `600`)
+* **Clave Privada del Servidor:** `/etc/ssl/private/servidor.key` (Permisos strictly: `600`)
 * **Certificado Raíz de la CA:** `/etc/ssl/mf0489/ca.crt` (Permisos: `644`)
 
 *(Nota: Las claves privadas se mantienen estrictamente protegidas con restricciones de `umask 077` y no se exponen en repositorios públicos).*
@@ -358,6 +358,41 @@ Para desplegar y verificar la Fase 3 de forma automatizada, utilice los scripts 
 [Ver galería completa de evidencias y capturas (Fase 3)](docs/mf0489/validations/fase3/server/evidencias.md)
 
 ## Validación de seguridad, TLS y monitorización (Fase 4)
+
+### Guía de Automatización y Ejecución de Scripts (Validación y Monitorización TLS)
+
+Para verificar y automatizar las comprobaciones de estado, auditoría de protocolos, captura de tráfico y correlación de Suricata con Nginx correspondientes a la **Fase 4**, ejecute de forma secuencial los scripts ubicados en `scripts/04-validacion-tls-monitorizacion/`:
+
+1. **Comprobación de estado general del entorno:**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/00-status-check.sh
+   ```
+2. **Auditoría de protocolos TLS y verificación de cifrado (Actividad 16):**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/01-tls-auditoria-ajustes.sh
+   ```
+3. **Verificación y diagnóstico de logs del sistema y contenedores:**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/03-logs-check.sh
+   ```
+4. **Captura interactiva de paquetes con tcpdump (Actividad 17):**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/04-tcp-dump.sh
+   ```
+5. **Ejecución de pruebas de conectividad desde el host/cliente:**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/05-from-host.sh
+   ```
+6. **Actualización y configuración automatizada de Suricata (Actividad 18):**
+   ```bash
+   sudo ./scripts/04-validacion-tls-monitorizacion/06-suricata-update.sh
+   ```
+7. **Aplicación de plantillas Nginx con formato de log TLS y pruebas de correlación:**
+   ```bash
+   ./scripts/04-validacion-tls-monitorizacion/07-update-nginx-logs.sh
+   ```
+
+---
 
 ### Comprobacion del estado actual
 
@@ -391,23 +426,23 @@ Para desplegar y verificar la Fase 3 de forma automatizada, utilice los scripts 
 
 ---
 
-### 2. Valoración de los algoritmos negociados 
+### 2. Valoración de los algoritmos negociados
 
 1. **¿Qué versión TLS se negoció en cada conexión válida?**
-    * Se negociaron **TLSv1.2** y **TLSv1.3** de forma exitosa al forzar cada versión de manera independiente en las pruebas.
+   * Se negociaron **TLSv1.2** y **TLSv1.3** de forma exitosa al forzar cada versión de manera independiente en las pruebas.
 
 2. **¿Qué cipher suite aparece en TLS 1.2 y en TLS 1.3?**
-    * En **TLS 1.2**: `ECDHE-RSA-AES256-GCM-SHA384`.
-    * En **TLS 1.3**: `TLS_AES_256_GCM_SHA384`.
+   * En **TLS 1.2**: `ECDHE-RSA-AES256-GCM-SHA384`.
+   * En **TLS 1.3**: `TLS_AES_256_GCM_SHA384`.
 
 3. **¿Qué protección aporta la cipher suite negociada?**
-    * Ambas utilizan cifrado simétrico AES de 256 bits en modo GCM (Galois/Counter Mode), ofreciendo confidencialidad sólida e integridad autenticada de los datos, apoyadas por intercambio de claves efímero (ECDHE / X25519) para garantizar secreto perfecto hacia adelante (*Forward Secrecy*).
+   * Ambas utilizan cifrado simétrico AES de 256 bits en modo GCM (Galois/Counter Mode), ofreciendo confidencialidad sólida e integridad autenticada de los datos, apoyadas por intercambio de claves efímero (ECDHE / X25519) para garantizar secreto perfecto hacia adelante (*Forward Secrecy*).
 
 4. **¿La cipher suite de la sesión es lo mismo que el algoritmo usado para firmar el certificado? Explica la diferencia.**
-    * No, cumplen propósitos distintos. La *cipher suite* cifra el tráfico activo de la sesión de red en tiempo real. Por su parte, el algoritmo de firma del certificado (como `rsa_pss_rsae_sha256`) es el mecanismo criptográfico utilizado por la Autoridad Certificadora (CA) para firmar la clave pública del servidor, garantizando así la autenticidad e identidad del dominio.
+   * No, cumplen propósitos distintos. La *cipher suite* cifra el tráfico activo de la sesión de red en tiempo real. Por su parte, el algoritmo de firma del certificado (como `rsa_pss_rsae_sha256`) es el mecanismo criptográfico utilizado por la Autoridad Certificadora (CA) para firmar la clave pública del servidor, garantizando así la autenticidad e identidad del dominio.
 
 5. **¿Qué comportamiento se observa al intentar usar TLS 1.1?**
-    * La conexión es rechazada por el sistema con el error `no protocols available` (`SSL routines:tls_setup_handshake:no protocols available`), lo que confirma que los protocolos obsoletos se encuentran inhabilitados en la directiva activa de Nginx.
+   * La conexión es rechazada por el sistema con el error `no protocols available` (`SSL routines:tls_setup_handshake:no protocols available`), lo que confirma que los protocolos obsoletos se encuentran inhabilitados en la directiva activa de Nginx.
 
 ---
 
@@ -505,5 +540,69 @@ Durante la ejecución de la prueba de correlación mediante `curl`, se estableci
 {"timestamp":"2026-10-27T09:17:08.688205+0000","event_type":"alert","src_ip":"172.16.43.1","dest_ip":"172.16.43.137","alert":"MF0489 - Conexion HTTPS observada"}
 ```
 #### B. Registro de acceso en Nginx
-```172.16.43.143 - - [27/Oct/2026:09:43:53 +0000] "GET /mf0489-correlacion-01 HTTP/1.1```
-</details>
+```bash
+172.16.43.143 - - [27/Oct/2026:09:43:53 +0000] "GET /mf0489-correlacion-01 HTTP/1.1
+```
+
+Aquí tienes el bloque redactado en Markdown correspondiente a la **Fase 5 y sus scripts de validación final E2E**, diseñado para que lo incorpores directamente al final de tu archivo `README.md`:
+
+```markdown
+## Fase 5 — Documentación, Reproducibilidad y Entrega Final
+
+<details>
+<summary>Detalles Fase 5 y Scripts de Validación E2E</summary>
+
+### 1. Guía de Ejecución de Validaciones Finales (Fase 5)
+
+Para garantizar la reproducibilidad[cite: 2], la seguridad del repositorio y el correcto funcionamiento de extremo a extremo de la infraestructura de comercio electrónico con HTTPS, Nginx y Suricata, ejecute de forma secuencial los scripts ubicados en `scripts/05-final-validations/`:
+
+**Auditoría de Git, exclusión de secretos y estructura:**
+
+   ```bash
+   ./scripts/05-final-validations/00-git.sh
+   ```
+
+**Verificación de Extremo a Extremo (Lado Servidor):**
+
+   ```bash
+   sudo ./scripts/05-final-validations/01-server-e2e-check.sh
+
+   ```
+
+**Verificación de Extremo a Extremo (Perspectiva Cliente y TLS):**
+
+
+
+   ```bash
+   ./scripts/05-final-validations/02-client-e2e-check.sh
+   ```
+   
+---
+
+### 2. Resumen de Resultados de las Validaciones Finales
+
+#### A. Auditoría de Seguridad y Git (`00-git.sh`)
+
+* **Estado del repositorio:** Repositorio Git verificado y árbol de trabajo controlado.
+* **Exclusiones de seguridad:** Reglas configuradas en `.gitignore` para proteger el archivo `.env`, claves privadas (`*.key`) y volcados de bases de datos (`*.sql`).
+
+
+* **Control de rastreo:** Comprobado mediante `git ls-files` que **no existen claves privadas, credenciales reales ni archivos sensibles rastreados** en el historial del repositorio.
+
+
+* **Plantilla de entorno:** Presencia verificada del archivo de plantilla (`template.env` / `.env.example`) para la parametrización segura de nuevos despliegues sin exponer secretos.
+
+
+
+#### B. Comprobaciones de Servidor y Cliente (E2E)
+
+* **Servidor (`01-server-e2e-check.sh`):** Contenedores Docker activos y corriendo (`shop-proxy`, `shop-wordpress`, `shop-db`), sintaxis de Nginx validada correctamente con `nginx -t`, servicio Suricata IDS operativo y puertos `80`/`443` a la escucha en el host.
+* **Cliente (`02-client-e2e-check.sh`):** Redirección perimetral HTTP a HTTPS (`301 Moved Permanently`) operativa, validación de cadena de confianza exitosa frente al certificado raíz de la CA (`ca.crt`), verificación criptográfica estricta con OpenSSL confirmando `Verification: OK` para `portal.artimar.thm`, y acceso funcional a la aplicación WordPress (`HTTP 200 OK`).
+
+---
+
+### 3. Evidencias de la Fase 5
+
+Las capturas y resultados de ejecución detallados de esta fase se encuentran almacenados en:
+
+* `docs/mf0489/validations/fase5/evidencias.md`
