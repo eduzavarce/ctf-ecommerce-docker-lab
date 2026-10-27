@@ -15,7 +15,7 @@ if [ ! -f "servidor.crt" ] || [ ! -f "ca.crt" ]; then
 fi
 
 echo "[*] Installing certificates into final system paths (/etc/ssl)..."
-sudo mkdir -p /etc/ssl/mf0489
+sudo mkdir -p -m 755 /etc/ssl/mf0489
 
 if [ -f "servidor.key" ]; then
     sudo install -o root -g root -m 600 servidor.key /etc/ssl/private/servidor.key

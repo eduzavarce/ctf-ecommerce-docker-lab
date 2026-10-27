@@ -1,0 +1,36 @@
+log_format mf0489
+  '$time_iso8601 client=$remote_addr:$remote_port '
+  'request="$request" status=$status '
+  'tls=$ssl_protocol cipher=$ssl_cipher';
+
+server {
+    listen 80;
+    server_name ${DOMAIN_NAME};
+
+    # Redirección permanente de HTTP a HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${DOMAIN_NAME};
+
+    # Configuración de certificados TLS montados dentro del contenedor
+    ssl_certificate /etc/nginx/certs/servidor.crt;
+    ssl_certificate_key /etc/nginx/certs/servidor.key;
+
+    # Protocolos seguros permitidos (TLS 1.2 y TLS 1.3 obligatorios)
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        # Proxy inverso hacia el servicio web interno (WordPress) en el puerto 80
+        proxy_pass http://web-01:80;
+
+        # Cabeceras obligatorias para conservar el contexto del cliente y evitar errores en WordPress
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

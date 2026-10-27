@@ -8,3 +8,6 @@
 backups/
 *.sql
 *.sql.gz
+
+nginx/*
+!nginx/default.conf.template

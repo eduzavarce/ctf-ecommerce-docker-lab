@@ -1,5 +1,5 @@
 #!/bin/bash
-docker compose up -d
+ docker compose up -d
 
 ./scripts/01-suricata/00-install.sh
 ./scripts/01-suricata/01-config.sh

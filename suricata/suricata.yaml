@@ -15,6 +15,15 @@ af-packet:
     threads: auto
 
 outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert
+        - http
+        - tls
+        - flow
   - fast:
       enabled: yes
       filename: fast.log
@@ -23,3 +32,5 @@ outputs:
       enabled: yes
       filename: stats.log
       interval: 8
+
+
