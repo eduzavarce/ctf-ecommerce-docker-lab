@@ -25,7 +25,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
+      DOMAIN_NAME: ${DOMAIN_NAME}
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - /etc/ssl/certs/servidor.crt:/etc/nginx/certs/servidor.crt:ro
@@ -36,7 +36,7 @@ services:
       - web-01
 
   web-01:
-    image: wordpress:latest
+    image: wordpress:php8.2-apache
     container_name: shop-wordpress
     restart: unless-stopped
     depends_on:
@@ -55,7 +55,7 @@ services:
       - priv-net
 
   db-01:
-    image: mariadb:latest
+    image: mariadb:10.11
     container_name: shop-db
     restart: unless-stopped
     environment:
