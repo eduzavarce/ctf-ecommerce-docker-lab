@@ -35,6 +35,8 @@ echo "[*] Validating Suricata configuration..."
 sudo suricata -T -c /etc/suricata/suricata.yaml
 
 echo "[*] Restarting Suricata service..."
-sudo systemctl restart suricata
+sudo systemctl stop suricata
+sudo systemctl start suricata
+
 echo "[*] Suricata status:"
 sudo systemctl status suricata --no-pager
