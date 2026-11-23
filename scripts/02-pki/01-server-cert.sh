@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 # Load project environment variables centrally
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/load-env-variables.sh"
 

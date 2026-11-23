@@ -18,10 +18,13 @@ echo "[*] Installing certificates into final system paths (/etc/ssl)..."
 sudo mkdir -p -m 755 /etc/ssl/mf0489
 
 if [ -f "servidor.key" ]; then
-    sudo install -o root -g root -m 600 servidor.key /etc/ssl/private/servidor.key
+    sudo install -o root -g root -m 600 "$HOME/mf0489/servidor.key" /etc/ssl/private/servidor.key
 fi
-sudo install -o root -g root -m 644 servidor.crt /etc/ssl/certs/servidor.crt
+
+sudo install -o root -g root -m 644 "$HOME/mf0489/servidor.crt" /etc/ssl/certs/servidor.crt
+
 sudo install -o root -g root -m 644 ca.crt /etc/ssl/mf0489/ca.crt
+
 
 echo "[*] Verifying permissions in /etc/ssl..."
 sudo ls -l /etc/ssl/private/servidor.key
