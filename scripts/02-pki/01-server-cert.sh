@@ -8,8 +8,22 @@ WORK_DIR="$HOME/mf0489"
 
 echo "[*] Preparing temporary directory $WORK_DIR for domain: $DOMAIN..."
 umask 077
+if [ -d "$WORK_DIR" ]; then
+    :
+elif [ -e "$WORK_DIR" ]; then
+    echo "[!] ERROR: $WORK_DIR exists but is not a directory."
+    exit 1
+fi
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
+
+for path in servidor.key servidor.csr /etc/ssl/private/servidor.key; do
+    if [ -d "$path" ]; then
+        echo "[!] ERROR: Expected a file at '$path', but found a directory."
+        echo "[!] Move the directory aside and retry; this script will not overwrite it."
+        exit 1
+    fi
+done
 
 if [ ! -f "servidor.key" ] && [ ! -f "/etc/ssl/private/servidor.key" ]; then
     echo "[*] Generating server private key (RSA 3072)..."

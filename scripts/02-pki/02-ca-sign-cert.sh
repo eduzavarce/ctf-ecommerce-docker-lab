@@ -17,6 +17,14 @@ cd "$CA_DIR"
 CSR_FILE="solicitudes/servidor.csr"
 CRT_FILE="emitidos/servidor.crt"
 
+for path in "$CSR_FILE" "$CRT_FILE" ca.crt private/ca.key servidor.ext; do
+    if [ -d "$path" ]; then
+        echo "[!] ERROR: Expected a file at '$CA_DIR/$path', but found a directory."
+        echo "[!] Move the directory aside and retry; this script will not overwrite it."
+        exit 1
+    fi
+done
+
 if [ ! -f "$CSR_FILE" ]; then
     echo "[!] ERROR: CSR file not found at '$CA_DIR/$CSR_FILE'."
     exit 1

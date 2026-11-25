@@ -8,8 +8,24 @@ CA_DIR="$HOME/ca_root-pki/ca"
 
 echo "[*] Preparing CA environment for domain: $DOMAIN in $CA_DIR..."
 umask 077
+
+for path in "$CA_DIR" "$CA_DIR/private" "$CA_DIR/solicitudes" "$CA_DIR/emitidos"; do
+    if [ -e "$path" ] && [ ! -d "$path" ]; then
+        echo "[!] ERROR: Expected a directory at '$path', but found a non-directory path."
+        exit 1
+    fi
+done
+
 mkdir -p "$CA_DIR"/{private,solicitudes,emitidos}
 cd "$CA_DIR"
+
+for path in private/ca.key ca.crt servidor.ext solicitudes/servidor.csr emitidos/servidor.crt; do
+    if [ -d "$path" ]; then
+        echo "[!] ERROR: Expected a file at '$CA_DIR/$path', but found a directory."
+        echo "[!] Move the directory aside and retry; this script will not overwrite it."
+        exit 1
+    fi
+done
 
 if [ ! -f "private/ca.key" ]; then
     echo "[*] Generating CA private key (RSA 4096 with AES-256)..."
