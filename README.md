@@ -606,3 +606,16 @@ Para garantizar la reproducibilidad[cite: 2], la seguridad del repositorio y el 
 Las capturas y resultados de ejecución detallados de esta fase se encuentran almacenados en:
 
 * `docs/mf0489/validations/fase5/evidencias.md`
+
+## MF0490 — Reto Boot2Root
+
+El recorrido validado en la VM Ubuntu ARM64 (`srv-01`) consta de dos pasos, probados desde Kali y repetidos después de reiniciar la VM:
+
+1. **Acceso inicial:** la vulnerabilidad de configuración de NFSv3 permite escribir en `/home/catalog` con `no_root_squash` desde la subred aislada del laboratorio. Desde Kali se instala una clave SSH pública y se inicia sesión en el host como `catalog` (UID 1001); desde esa cuenta se lee `user.txt`.
+2. **Escalada local:** la regla sudoers vulnerable permite a `catalog` ejecutar `/usr/bin/find` como root sin contraseña. La ejecución de `find` abre una shell root en el host y permite leer `/root/root.txt`.
+
+El export está limitado a `172.16.43.0/24`, la subred aislada acordada para evaluación. Mantener la VM en esa red aislada. Los valores de las flags se conservan solo en el dossier privado del creador.
+
+- [Fase 1 — Acceso inicial mediante NFS](docs/mf0490/validations/fase1/evidencias.md)
+- [Fase 2 — Escalada local a root](docs/mf0490/validations/fase2/evidencias.md)
+- [Ficha pública del reto (sin spoilers)](docs/mf0490/ficha-publica.md)
